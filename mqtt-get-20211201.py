@@ -1,3 +1,4 @@
+import logging
 import paho.mqtt.client as mqttClient
 import time
 import datetime
@@ -25,8 +26,8 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, message):
-    try:
-        if save2file:
+    if save2file:
+        try:
             today = datetime.date.today()  # Get OS time
             year = today.year  # Get year to built folder
             folder_path = "C:/" + str(year) + "/"  # Set folder path
@@ -39,14 +40,15 @@ def on_message(client, userdata, message):
                 else:
                     f.write(message.payload.hex().upper() + "\n")
                 f.close()  # close data
-        else:
+        except Exception as e:
+            logging.error('Caught exception error: ' + str(e))
+    else:
             if jsonorhex:
                 print(str(message.payload,
                           encoding='utf-8') + "\n\n")
             else:
                 print(message.payload.hex().upper() + "\n\n")
-    except Exception as e:
-        logging.error('Caught exception error: ' + str(e))
+    
     time.sleep(5)
 
 Connected = False  # global variable for the state of the connection
