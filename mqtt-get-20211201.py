@@ -1,5 +1,5 @@
 import logging
-import paho.mqtt.client as mqttClient
+import paho.mqtt.client as mqtt
 import time
 import datetime
 import os
@@ -36,7 +36,8 @@ def on_message(client, userdata, message):
                                 encoding='utf-8') + "\n")
                 else:
                     f.write(message.payload.hex().upper() + "\n")
-                f.close()  
+                f.close()
+                print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), 'データをファイルに保存しました')  
         except Exception as e:
             logging.error('Caught exception error: ' + str(e))
     else:
@@ -50,7 +51,7 @@ def on_message(client, userdata, message):
 
 
 Connected = False  
-client = mqttClient.Client("clientid1")  
+client = mqtt.Client()  
 client.on_connect = on_connect 
 client.on_message = on_message  
 client.connect(broker_address, port, 5) 
